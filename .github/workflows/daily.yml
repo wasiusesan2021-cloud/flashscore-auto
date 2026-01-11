@@ -1,0 +1,32 @@
+name: Daily Flashscore Fixtures
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install pandas playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Run Flashscore scraper
+        run: python fetch_flashscore.py
+
+      - name: Upload fixtures
+        uses: actions/upload-artifact@v4
+        with:
+          name: flashscore-fixtures
+          path: fixtures_flashscore.csv
