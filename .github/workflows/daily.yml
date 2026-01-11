@@ -1,16 +1,16 @@
 name: Daily Flashscore Fixtures
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "0 3 * * *"   # Runs daily at 03:00 UTC
+    # 03:00 UTC daily (adjust if you want)
+    - cron: "0 3 * * *"
+  workflow_dispatch:
 
 jobs:
   run:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
       - name: Set up Python
@@ -21,7 +21,8 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 pandas
+          pip install pandas playwright
+          python -m playwright install --with-deps chromium
 
       - name: Run Flashscore scraper
         run: python fetch_flashscore.py
